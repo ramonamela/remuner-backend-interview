@@ -1,0 +1,43 @@
+version: "3.7"
+
+services:
+  remuner-backend:
+    build:
+      context: .
+      target: remuner-backend-dev
+    image: remuner-backend-dev
+    volumes:
+      - type: bind
+        source: ./app
+        target: /remuner-backend/app
+    env_file:
+     - .env
+    ports:
+      - "8000:80"
+    networks:
+      - default-net
+
+  format:
+    build:
+      context: .
+      target: remuner-backend-dev
+    image: remuner-backend-dev
+    volumes:
+      - type: bind
+        source: ./app
+        target: /remuner-backend/app
+    entrypoint: ruff format
+    depends_on:
+      - black
+
+  black:
+    image: remuner-backend-dev:latest
+    volumes:
+      - type: bind
+        source: ./
+        target: /remuner-backend
+        read_only: true
+    entrypoint: black --config .black --check --diff .
+
+networks:
+  default-net:
