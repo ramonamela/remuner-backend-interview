@@ -2,7 +2,7 @@ from tortoise.exceptions import IntegrityError
 
 from app.users.domain.bo.team_bo import TeamBO
 from app.users.domain.persistence.team_bo_persistence_interface import TeamBOPersistenceInterface
-from app.users.infrastructure.persistence.exceptions import RepeatedTeamNameException
+from app.users.infrastructure.persistence.exceptions.team_bo import RepeatedTeamNameException
 from app.users.models import Team
 
 

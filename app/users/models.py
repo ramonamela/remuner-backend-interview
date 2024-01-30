@@ -8,7 +8,7 @@ class User(Model):
     user_id = fields.IntField(pk=True)
     first_name = fields.CharField(max_length=50)
     last_name = fields.CharField(max_length=50)
-    email = fields.CharField(max_length=100)
+    email = fields.CharField(max_length=100, unique=True)
     status = fields.CharEnumField(enum_type=UserStatus)
 
     def __str__(self):

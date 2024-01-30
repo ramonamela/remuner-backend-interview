@@ -7,12 +7,11 @@ from app.users.infrastructure.api.v1.user.v1.crud.views import (
     users__user_id_delete_v1,
     users__user_id_get_v1,
     users__user_id_post_v1,
-    users__user_id_post_v2,
     users_get_v1,
     users_post_v1,
 )
 from app.users.infrastructure.api.v1.user.v2.crud.view_models import UserCrudPostInputV2
-from app.users.infrastructure.api.v1.user.v2.crud.views import users_post_v2
+from app.users.infrastructure.api.v1.user.v2.crud.views import users__user_id_post_v2, users_post_v2
 from remuner_library.fastapi_extensions import custom_router_decorator
 
 router = APIRouter()

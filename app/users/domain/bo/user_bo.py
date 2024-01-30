@@ -10,4 +10,4 @@ class UserBO(BaseModel):
     first_name: str
     last_name: str
     email: str
-    status: UserStatus
+    status: Optional[UserStatus] = UserStatus.PENDING

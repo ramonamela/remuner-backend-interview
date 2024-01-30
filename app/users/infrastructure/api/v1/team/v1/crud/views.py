@@ -7,7 +7,7 @@ from app.users.infrastructure.api.v1.team.v1.crud.view_models import (
     TeamCrudPostInputV1,
     TeamCrudPostOutputV1,
 )
-from app.users.infrastructure.persistence.exceptions import RepeatedTeamNameException
+from app.users.infrastructure.persistence.exceptions.team_bo import RepeatedTeamNameException
 
 
 async def teams_get_v1() -> TeamCrudPostOutputV1:

@@ -12,13 +12,17 @@ async def integrations__integration_id_get_v1(integration_id: int) -> Integratio
     return IntegrationCrudPostOutputV1(**{"id": 1})
 
 
-async def integrations_post_v1(post_input: IntegrationCrudPostInputV1) -> IntegrationCrudPostOutputV1:
+async def integrations_post_v1(
+    post_input: IntegrationCrudPostInputV1,
+) -> IntegrationCrudPostOutputV1:
     return IntegrationCrudPostOutputV1(**{"id": 1})
     # view_controller = CreateIntegrationViewControllers.v1()
     # return await view_controller(input_team=post_input)
 
 
-async def integrations_post_v2(post_input: IntegrationCrudPostInputV1) -> IntegrationCrudPostOutputV1:
+async def integrations_post_v2(
+    post_input: IntegrationCrudPostInputV1,
+) -> IntegrationCrudPostOutputV1:
     return IntegrationCrudPostOutputV1(**{"id": 1})
 
 
