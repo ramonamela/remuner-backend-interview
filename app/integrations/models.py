@@ -8,7 +8,7 @@ class Integration(Model):
     integration_id = fields.IntField(pk=True)
     name = fields.CharField(max_length=50)
     token = fields.CharField(max_length=50)
-    user = fields.ForeignKeyField("models.User", related_name='integrations')
+    user = fields.ForeignKeyField("models.User", related_name="integrations")
     status = fields.CharEnumField(enum_type=IntegrationStatus)
 
     def __str__(self):

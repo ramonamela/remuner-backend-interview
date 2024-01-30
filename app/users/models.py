@@ -17,12 +17,14 @@ class User(Model):
     class Meta:
         table = "users"
 
+
 class Team(Model):
     name = fields.CharField(max_length=50)
     users = fields.ManyToManyField("models.User", through="teams_memberships", related_name="team")
 
     class Meta:
         table = "teams"
+
 
 class TeamMembership(Model):
     membership_id = fields.IntField(pk=True)

@@ -147,7 +147,7 @@ services:
       - type: bind
         source: .
         target: /remuner-backend
-    entrypoint: ruff check --fix
+    entrypoint: sh -c "black --config .black . && ruff check --fix"
     depends_on:
       - black
 
@@ -159,6 +159,14 @@ services:
         target: /remuner-backend
         read_only: true
     entrypoint: black --config .black --check --diff .
+
+  format_black:
+    image: remuner-backend-dev:latest
+    volumes:
+      - type: bind
+        source: ./
+        target: /remuner-backend
+    entrypoint: black --config .black .
 
 volumes:
   postgres-remuner-backend-data:

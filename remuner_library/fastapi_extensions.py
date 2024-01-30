@@ -1,6 +1,8 @@
-from typing import Any, Dict, Callable
 from functools import wraps
+from typing import Any, Callable, Dict
+
 from fastapi import Response, status
+
 
 def custom_router_decorator(versions: Dict[Any, Callable]):
     def decorator(func: Callable):
@@ -11,5 +13,7 @@ def custom_router_decorator(versions: Dict[Any, Callable]):
                 return await versions[X_API_Version](*args, **kwargs)
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {"message": "Incorrect header value"}
+
         return wrapper
+
     return decorator
