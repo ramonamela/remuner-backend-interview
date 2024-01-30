@@ -11,6 +11,7 @@ extend-select = [
     # isort
     "I",
 ]
+ignore = ["E501"]
 [tool.aerich]
 tortoise_orm = "app.database.TORTOISE_ORM"
 location = "./migrations"

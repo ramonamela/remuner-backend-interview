@@ -19,7 +19,8 @@ class User(Model):
 
 
 class Team(Model):
-    name = fields.CharField(max_length=50)
+    team_id = fields.IntField(pk=True)
+    name = fields.CharField(max_length=50, unique=True)
     users = fields.ManyToManyField("models.User", through="teams_memberships", related_name="team")
 
     class Meta:

@@ -1,13 +1,7 @@
 from fastapi import APIRouter
 
+from app.integrations.infrastructure.api.v1.router import router as v1_router
+
 router = APIRouter()
 
-
-@router.get("/")
-async def root():
-    return {"message": "Hello Word from router"}
-
-
-@router.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name} from router"}
+router.include_router(v1_router, prefix="/v1", tags=["v1"])

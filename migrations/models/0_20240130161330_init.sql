@@ -1,7 +1,7 @@
 -- upgrade --
 CREATE TABLE IF NOT EXISTS "teams" (
-    "id" SERIAL NOT NULL PRIMARY KEY,
-    "name" VARCHAR(50) NOT NULL
+    "team_id" SERIAL NOT NULL PRIMARY KEY,
+    "name" VARCHAR(50) NOT NULL UNIQUE
 );
 CREATE TABLE IF NOT EXISTS "users" (
     "user_id" SERIAL NOT NULL PRIMARY KEY,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 COMMENT ON COLUMN "users"."status" IS 'ACTIVE: active\nINACTIVE: inactive\nPENDING: pending';
 CREATE TABLE IF NOT EXISTS "teams_memberships" (
     "membership_id" SERIAL NOT NULL PRIMARY KEY,
-    "team_id_id" INT NOT NULL REFERENCES "teams" ("id") ON DELETE CASCADE,
+    "team_id_id" INT NOT NULL REFERENCES "teams" ("team_id") ON DELETE CASCADE,
     "user_id_id" INT NOT NULL REFERENCES "users" ("user_id") ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "integrations" (
