@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from app.integrations.enums import IntegrationStatus
-from app.users.infrastructure.api.v1.team.v1.crud.swagger_examples import crud_post_input_v1
+from app.integrations.infrastructure.api.v1.integration.v1.crud.swagger_examples import crud_post_input_v1
 
 
 class IntegrationCrudPostInputV1(BaseModel):

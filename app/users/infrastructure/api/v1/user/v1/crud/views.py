@@ -26,10 +26,6 @@ async def users_post_v1(post_input: UserCrudPostInputV1) -> UserCrudPostOutputV1
         raise HTTPException(status_code=409, detail="Email already exists in the database")
 
 
-async def users_post_v2(post_input: UserCrudPostInputV1) -> UserCrudPostOutputV1:
-    return UserCrudPostOutputV1(**{"id": 1})
-
-
 async def users__user_id_post_v1(post_input: UserCrudPostInputV1) -> UserCrudPostOutputV1:
     return UserCrudPostOutputV1(**{"id": 1})
 

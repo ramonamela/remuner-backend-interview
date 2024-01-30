@@ -1,0 +1,10 @@
+from app.users.domain.bo.user_bo import UserBO
+from app.users.infrastructure.api.v1.user.v2.crud.view_models import UserCrudPostInputV2
+
+
+class UserCrudPostInputMappingServiceV2:
+
+    def __call__(self, input_user: UserCrudPostInputV2):
+        return UserBO(
+            first_name=input_user.name, last_name=input_user.last_name, email=input_user.email
+        )

@@ -15,10 +15,9 @@ router = APIRouter()
 
 @router.get("/teams")
 @custom_router_decorator(versions={"1": teams_get_v1})
-@custom_router_decorator
 async def teams_get(
     response: Response,
-    X_API_Version: str = Header(None, enum=["1", "2"]),
+    X_API_Version: str = Header(None, enum=["1"]),
 ):
     pass
 
@@ -27,7 +26,7 @@ async def teams_get(
 @custom_router_decorator(versions={"1": teams__team_id_get_v1})
 async def teams__team_id_get(
     response: Response,
-    X_API_Version: str = Header(None, enum=["1", "2"]),
+    X_API_Version: str = Header(None, enum=["1"]),
 ):
     pass
 
@@ -37,18 +36,25 @@ async def teams__team_id_get(
 async def teams_post(
     post_input: TeamCrudPostInputV1,
     response: Response,
-    X_API_Version: str = Header(None, enum=["1", "2"]),
+    X_API_Version: str = Header(None, enum=["1"]),
 ):
     pass
 
 
 @router.post("/teams/{team_id}")
 @custom_router_decorator(versions={"1": teams__team_id_post_v1})
-async def teams__team_id_post():
+async def teams__team_id_post(
+        post_input: TeamCrudPostInputV1,
+        response: Response,
+        X_API_Version: str = Header(None, enum=["1"]),
+):
     pass
 
 
 @router.delete("/teams/{team_id}")
 @custom_router_decorator(versions={"1": teams__team_id_delete_v1})
-async def teams__team_id_delete():
+async def teams__team_id_delete(
+        response: Response,
+        X_API_Version: str = Header(None, enum=["1"]),
+):
     pass

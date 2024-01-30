@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, List, Optional
 
 from pydantic import BaseModel
 
@@ -11,3 +11,5 @@ class UserBO(BaseModel):
     last_name: str
     email: str
     status: Optional[UserStatus] = UserStatus.PENDING
+    team_ids: Optional[List[int]] = None
+    team: Optional[List[Any]] = None  # Trick to allow circular reference, this Any is indeed TeamBO
