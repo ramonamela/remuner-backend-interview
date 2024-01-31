@@ -6,5 +6,8 @@ class UserCrudPostInputMappingServiceV2:
 
     def __call__(self, input_user: UserCrudPostInputV2):
         return UserBO(
-            first_name=input_user.name, last_name=input_user.last_name, email=input_user.email
+            first_name=input_user.name,
+            last_name=input_user.last_name,
+            email=input_user.email,
+            team_ids=input_user.teams,
         )

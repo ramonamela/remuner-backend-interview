@@ -21,16 +21,7 @@ class User(Model):
 class Team(Model):
     team_id = fields.IntField(pk=True)
     name = fields.CharField(max_length=50, unique=True)
-    users = fields.ManyToManyField("models.User", through="teams_memberships", related_name="team")
+    users = fields.ManyToManyField("models.User", through="teams_memberships", related_name="teams")
 
     class Meta:
         table = "teams"
-
-
-class TeamMembership(Model):
-    membership_id = fields.IntField(pk=True)
-    team_id = fields.ForeignKeyField("models.Team", related_name="team_memberships")
-    user_id = fields.ForeignKeyField("models.User", related_name="team_membership")
-
-    class Meta:
-        table = "teams_memberships"

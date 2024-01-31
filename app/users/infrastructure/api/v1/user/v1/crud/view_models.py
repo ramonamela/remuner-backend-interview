@@ -1,5 +1,6 @@
+from typing import List
+
 from pydantic import BaseModel
-from typing import List, Optional
 
 from app.users.infrastructure.api.v1.user.v1.crud.swagger_examples import crud_post_input_v1
 

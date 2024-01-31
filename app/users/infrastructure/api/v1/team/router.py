@@ -44,9 +44,9 @@ async def teams_post(
 @router.post("/teams/{team_id}")
 @custom_router_decorator(versions={"1": teams__team_id_post_v1})
 async def teams__team_id_post(
-        post_input: TeamCrudPostInputV1,
-        response: Response,
-        X_API_Version: str = Header(None, enum=["1"]),
+    post_input: TeamCrudPostInputV1,
+    response: Response,
+    X_API_Version: str = Header(None, enum=["1"]),
 ):
     pass
 
@@ -54,7 +54,7 @@ async def teams__team_id_post(
 @router.delete("/teams/{team_id}")
 @custom_router_decorator(versions={"1": teams__team_id_delete_v1})
 async def teams__team_id_delete(
-        response: Response,
-        X_API_Version: str = Header(None, enum=["1"]),
+    response: Response,
+    X_API_Version: str = Header(None, enum=["1"]),
 ):
     pass

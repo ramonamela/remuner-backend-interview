@@ -1,13 +1,26 @@
+import asyncio
+
+from tortoise import transactions
 from tortoise.exceptions import IntegrityError
 
 from app.users.domain.bo.user_bo import UserBO
 from app.users.domain.persistence.user_bo_persistence_interface import UserBOPersistenceInterface
+from app.users.infrastructure.persistence.exceptions.team_bo import TeamNotFoundException
 from app.users.infrastructure.persistence.exceptions.user_bo import RepeatedEmailException
-from app.users.models import User
+from app.users.models import Team, User
 
 
 class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
 
+    @classmethod
+    async def _add_to_user(cls, user, team_ids):
+        teams = await Team.filter(team_id__in=team_ids).only("team_id")
+        if len(teams) != len(team_ids):
+            raise TeamNotFoundException()
+        tasks = [user.teams.add(team) for team in teams]
+        await asyncio.gather(*tasks)
+
+    @transactions.atomic()
     async def create(self, user_bo: UserBO):
         try:
             new_user = await User.create(
@@ -20,5 +33,7 @@ class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
             if "duplicate key value violates unique constraint" in str(exc):
                 raise RepeatedEmailException()
             raise exc
+        if user_bo.team_ids is not None and len(user_bo.team_ids) > 0:
+            await self._add_to_user(new_user, user_bo.team_ids)
         user_bo.id = new_user.user_id
         return new_user.user_id
