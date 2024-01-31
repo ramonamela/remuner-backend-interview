@@ -18,11 +18,11 @@ class CreateUserViewControllers(containers.DeclarativeContainer):
     v1 = providers.Singleton(
         CreateUserViewControllerV1,
         input_mapping_service=UserCrudInputMappingServiceV1(),
-        user_bo_persistence_service=UserBOPersistenceServices.tortoise,
+        user_bo_persistence_service=UserBOPersistenceServices.remuner,
     )
 
     v2 = providers.Singleton(
         CreateUserViewControllerV2,
         input_mapping_service=UserCrudInputMappingServiceV2(),
-        user_bo_persistence_service=UserBOPersistenceServices.tortoise,
+        user_bo_persistence_service=UserBOPersistenceServices.remuner,
     )

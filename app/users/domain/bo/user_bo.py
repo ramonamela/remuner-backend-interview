@@ -12,4 +12,7 @@ class UserBO(BaseModel):
     email: str
     status: Optional[UserStatus] = UserStatus.PENDING
     team_ids: Optional[List[int]] = None
-    team: Optional[List[Any]] = None  # Trick to allow circular reference, this Any is indeed TeamBO
+    teams: Optional[List[Any]] = None  # Any to allow circular reference, this Any is indeed TeamBO
+    integrations: Optional[List[Any]] = (
+        None  # Any to allow circular reference, this Any is indeed IntegrationBO
+    )

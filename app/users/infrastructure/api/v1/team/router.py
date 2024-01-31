@@ -25,6 +25,7 @@ async def teams_get(
 @router.get("/teams/{team_id}")
 @custom_router_decorator(versions={"1": teams__team_id_get_v1})
 async def teams__team_id_get(
+    team_id: int,
     response: Response,
     X_API_Version: str = Header(None, enum=["1"]),
 ):
@@ -44,6 +45,7 @@ async def teams_post(
 @router.post("/teams/{team_id}")
 @custom_router_decorator(versions={"1": teams__team_id_post_v1})
 async def teams__team_id_post(
+    team_id: int,
     post_input: TeamCrudInputV1,
     response: Response,
     X_API_Version: str = Header(None, enum=["1"]),
@@ -54,6 +56,7 @@ async def teams__team_id_post(
 @router.delete("/teams/{team_id}")
 @custom_router_decorator(versions={"1": teams__team_id_delete_v1})
 async def teams__team_id_delete(
+    team_id: int,
     response: Response,
     X_API_Version: str = Header(None, enum=["1"]),
 ):

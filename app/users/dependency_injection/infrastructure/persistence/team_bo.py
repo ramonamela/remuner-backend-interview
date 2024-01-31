@@ -8,3 +8,5 @@ class TeamBOPersistenceServices(containers.DeclarativeContainer):
     tortoise = providers.Singleton(
         TeamBOTortoisePersistenceService,
     )
+
+    remuner = tortoise

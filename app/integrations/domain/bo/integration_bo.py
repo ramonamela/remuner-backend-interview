@@ -9,6 +9,6 @@ from app.users.domain.bo.user_bo import UserBO
 class IntegrationBO(BaseModel):
     id: Optional[int] = None
     name: str
-    token: str
-    user: UserBO
+    token: Optional[str]
+    user: Optional[UserBO]
     status: IntegrationStatus

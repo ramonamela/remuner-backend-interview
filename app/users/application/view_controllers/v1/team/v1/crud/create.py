@@ -3,8 +3,8 @@ from app.users.application.view_controllers.v1.team.v1.common.input_mapping_serv
 )
 from app.users.domain.persistence.team_bo_persistence_interface import TeamBOPersistenceInterface
 from app.users.infrastructure.api.v1.team.v1.crud.view_models import (
-    TeamCrudInputV1,
     TeamCrudIdOutputV1,
+    TeamCrudInputV1,
 )
 
 

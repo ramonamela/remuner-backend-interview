@@ -14,5 +14,5 @@ class CreateTeamViewControllers(containers.DeclarativeContainer):
     v1 = providers.Singleton(
         CreateTeamViewControllerV1,
         input_mapping_service=TeamCrudInputMappingServiceV1(),
-        team_bo_persistence_service=TeamBOPersistenceServices.tortoise,
+        team_bo_persistence_service=TeamBOPersistenceServices.remuner,
     )

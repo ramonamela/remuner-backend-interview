@@ -4,8 +4,8 @@ from app.users.application.view_controllers.v1.user.v1.common.input_mapping_serv
 from app.users.domain.persistence.user_bo_persistence_interface import UserBOPersistenceInterface
 from app.users.enums import UserStatus
 from app.users.infrastructure.api.v1.user.v1.crud.view_models import (
-    UserCrudInputV1,
     UserCrudIdOutputV1,
+    UserCrudInputV1,
 )
 
 

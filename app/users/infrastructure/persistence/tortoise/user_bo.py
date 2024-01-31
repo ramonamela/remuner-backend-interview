@@ -1,4 +1,5 @@
 import asyncio
+from typing import List
 
 from tortoise import transactions
 from tortoise.exceptions import IntegrityError
@@ -6,11 +7,24 @@ from tortoise.exceptions import IntegrityError
 from app.users.domain.bo.user_bo import UserBO
 from app.users.domain.persistence.user_bo_persistence_interface import UserBOPersistenceInterface
 from app.users.infrastructure.persistence.exceptions.team_bo import TeamNotFoundException
-from app.users.infrastructure.persistence.exceptions.user_bo import RepeatedEmailException, UserNotFoundException
+from app.users.infrastructure.persistence.exceptions.user_bo import (
+    RepeatedEmailException,
+    UserNotFoundException,
+)
+from app.users.infrastructure.persistence.tortoise.services.team_bo_mapping_service import (
+    TeamBOMappingService,
+)
+from app.users.infrastructure.persistence.tortoise.services.user_bo_mapping_service import (
+    UserBOMappingService,
+)
 from app.users.models import Team, User
 
 
 class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
+
+    def __init__(self):
+        self.user_bo_mapping_service = UserBOMappingService()
+        self.team_bo_mapping_service = TeamBOMappingService()
 
     @classmethod
     async def _add_to_user(cls, user, team_ids):
@@ -38,18 +52,24 @@ class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
         user_bo.id = new_user.user_id
         return new_user.user_id
 
-    @classmethod
-    def _generate_bo(cls, User):
-        pass
+    def _generate_bo(self, user: User) -> UserBO:
+        user_bo = self.user_bo_mapping_service(user=user)
+        user_bo.teams = list(map(lambda team: self.team_bo_mapping_service(team), user.teams))
+        user_bo.integrations = list(
+            map(
+                lambda integration: self.integration_bo_mapping_service(integration),
+                user.integrations,
+            )
+        )
+        return user_bo
 
-    async def get_all(self):
-        users = await User.all().prefetch_related("teams")
-        raise Exception
+    async def get_all(self) -> List[UserBO]:
+        users = await User.filter().prefetch_related("teams", "integrations")
+        return list(map(lambda user: self._generate_bo(user), users))
 
-
-    async def get(self, user_id: int):
-        user = User.get(user_id=user_id).prefetch_related("teams")
-        raise Exception
+    async def get(self, user_id: int) -> UserBO:
+        user = await User.get(user_id=user_id).prefetch_related("teams", "integrations")
+        return self._generate_bo(user=user)
 
     async def delete(self, user_id: int):
         object_to_delete = await User.get(user_id=user_id)

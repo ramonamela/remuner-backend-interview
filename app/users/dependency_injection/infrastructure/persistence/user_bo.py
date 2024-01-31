@@ -8,3 +8,5 @@ class UserBOPersistenceServices(containers.DeclarativeContainer):
     tortoise = providers.Singleton(
         UserBOTortoisePersistenceService,
     )
+
+    remuner = tortoise

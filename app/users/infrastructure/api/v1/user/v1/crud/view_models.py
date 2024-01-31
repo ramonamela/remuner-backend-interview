@@ -2,6 +2,7 @@ from typing import List
 
 from pydantic import BaseModel
 
+from app.integrations.enums import IntegrationStatus
 from app.users.infrastructure.api.v1.user.v1.crud.swagger_examples import crud_post_input_v1
 
 
@@ -22,6 +23,7 @@ class UserCrudTeamOutputV1(BaseModel):
 class UserCrudIntegrationOutputV1(BaseModel):
     id: int
     name: str
+    status: IntegrationStatus
 
 
 class UserCrudOutputV1(BaseModel):
