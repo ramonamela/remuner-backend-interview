@@ -4,22 +4,22 @@ from app.users.dependency_injection.application.view_controllers.v1.user.crud.cr
     CreateUserViewControllers,
 )
 from app.users.infrastructure.api.v1.user.v1.crud.view_models import (
-    UserCrudPostInputV1,
-    UserCrudPostOutputV1,
+    UserCrudInputV1,
+    UserCrudIdOutputV1,
 )
 from app.users.infrastructure.persistence.exceptions.team_bo import TeamNotFoundException
 from app.users.infrastructure.persistence.exceptions.user_bo import RepeatedEmailException
 
 
-async def users_get_v1() -> UserCrudPostOutputV1:
-    return UserCrudPostOutputV1(**{"id": 1})
+async def users_get_v1() -> UserCrudIdOutputV1:
+    return UserCrudIdOutputV1(**{"id": 1})
 
 
-async def users__user_id_get_v1(user_id: int) -> UserCrudPostOutputV1:
-    return UserCrudPostOutputV1(**{"id": 1})
+async def users__user_id_get_v1(user_id: int) -> UserCrudIdOutputV1:
+    return UserCrudIdOutputV1(**{"id": 1})
 
 
-async def users_post_v1(post_input: UserCrudPostInputV1) -> UserCrudPostOutputV1:
+async def users_post_v1(post_input: UserCrudInputV1) -> UserCrudIdOutputV1:
     view_controller = CreateUserViewControllers.v1()
     try:
         return await view_controller(input_user=post_input)
@@ -29,9 +29,9 @@ async def users_post_v1(post_input: UserCrudPostInputV1) -> UserCrudPostOutputV1
         raise HTTPException(status_code=404, detail="Team not found")
 
 
-async def users__user_id_post_v1(post_input: UserCrudPostInputV1) -> UserCrudPostOutputV1:
-    return UserCrudPostOutputV1(**{"id": 1})
+async def users__user_id_post_v1(post_input: UserCrudInputV1) -> UserCrudIdOutputV1:
+    return UserCrudIdOutputV1(**{"id": 1})
 
 
-async def users__user_id_delete_v1(post_input: UserCrudPostInputV1) -> UserCrudPostOutputV1:
-    return UserCrudPostOutputV1(**{"id": 1})
+async def users__user_id_delete_v1(post_input: UserCrudInputV1) -> UserCrudIdOutputV1:
+    return UserCrudIdOutputV1(**{"id": 1})

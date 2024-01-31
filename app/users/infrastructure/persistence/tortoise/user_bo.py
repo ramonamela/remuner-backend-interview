@@ -6,7 +6,7 @@ from tortoise.exceptions import IntegrityError
 from app.users.domain.bo.user_bo import UserBO
 from app.users.domain.persistence.user_bo_persistence_interface import UserBOPersistenceInterface
 from app.users.infrastructure.persistence.exceptions.team_bo import TeamNotFoundException
-from app.users.infrastructure.persistence.exceptions.user_bo import RepeatedEmailException
+from app.users.infrastructure.persistence.exceptions.user_bo import RepeatedEmailException, UserNotFoundException
 from app.users.models import Team, User
 
 
@@ -37,3 +37,23 @@ class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
             await self._add_to_user(new_user, user_bo.team_ids)
         user_bo.id = new_user.user_id
         return new_user.user_id
+
+    @classmethod
+    def _generate_bo(cls, User):
+        pass
+
+    async def get_all(self):
+        users = await User.all().prefetch_related("teams")
+        raise Exception
+
+
+    async def get(self, user_id: int):
+        user = User.get(user_id=user_id).prefetch_related("teams")
+        raise Exception
+
+    async def delete(self, user_id: int):
+        object_to_delete = await User.get(user_id=user_id)
+        if object_to_delete:
+            await object_to_delete.delete()
+        else:
+            raise UserNotFoundException()

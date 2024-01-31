@@ -2,7 +2,7 @@ from typing import Union
 
 from fastapi import APIRouter, Header, Response
 
-from app.users.infrastructure.api.v1.user.v1.crud.view_models import UserCrudPostInputV1
+from app.users.infrastructure.api.v1.user.v1.crud.view_models import UserCrudInputV1
 from app.users.infrastructure.api.v1.user.v1.crud.views import (
     users__user_id_delete_v1,
     users__user_id_get_v1,
@@ -32,7 +32,7 @@ async def users__user_id_get(response: Response, X_API_Version: str = Header(Non
 @router.post("/users")
 @custom_router_decorator(versions={"1": users_post_v1, "2": users_post_v2})
 async def users_post(
-    post_input: Union[UserCrudPostInputV1, UserCrudPostInputV2],
+    post_input: Union[UserCrudInputV1, UserCrudPostInputV2],
     response: Response,
     X_API_Version: str = Header(None, enum=["1", "2"]),
 ):
@@ -42,7 +42,7 @@ async def users_post(
 @router.post("/users/{user_id}")
 @custom_router_decorator(versions={"1": users__user_id_post_v1, "2": users__user_id_post_v2})
 async def users__user_id_post(
-    post_input: Union[UserCrudPostInputV1, UserCrudPostInputV2],
+    post_input: Union[UserCrudInputV1, UserCrudPostInputV2],
     response: Response,
     X_API_Version: str = Header(None, enum=["1", "2"]),
 ):
