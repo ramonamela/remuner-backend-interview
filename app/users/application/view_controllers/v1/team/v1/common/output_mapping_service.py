@@ -14,6 +14,7 @@ class TeamCrudOutputMappingServiceV1:
             first_name=user_bo.first_name,
             last_name=user_bo.last_name,
             email=user_bo.email,
+            status=user_bo.status,
         )
 
     def __call__(self, team_bo: TeamBO) -> TeamCrudOutputV1:

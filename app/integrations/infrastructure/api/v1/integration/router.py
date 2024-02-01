@@ -24,7 +24,7 @@ async def integrations_get(response: Response, X_API_Version: str = Header(None,
 @router.get("/integrations/{integration_id}")
 @custom_router_decorator(versions={"1": integrations__integration_id_get_v1})
 async def integrations__integration_id_get(
-    response: Response, X_API_Version: str = Header(None, enum=["1"])
+    integration_id: int, response: Response, X_API_Version: str = Header(None, enum=["1"])
 ):
     pass
 
@@ -34,7 +34,7 @@ async def integrations__integration_id_get(
 async def integrations_post(
     post_input: IntegrationCrudInputV1,
     response: Response,
-    X_API_Version: str = Header(None, enum=["1", "2"]),
+    X_API_Version: str = Header(None, enum=["1"]),
 ):
     pass
 
@@ -42,9 +42,9 @@ async def integrations_post(
 @router.post("/integrations/{integration_id}")
 @custom_router_decorator(versions={"1": integrations__integration_id_post_v1})
 async def integrations__integration_id_post(
-    post_input: IntegrationCrudInputV1,
+    integration_id: int,
     response: Response,
-    X_API_Version: str = Header(None, enum=["1", "2"]),
+    X_API_Version: str = Header(None, enum=["1"]),
 ):
     pass
 
@@ -52,6 +52,6 @@ async def integrations__integration_id_post(
 @router.delete("/integrations/{integration_id}")
 @custom_router_decorator(versions={"1": integrations__integration_id_delete_v1})
 async def integrations__integration_id_delete(
-    response: Response, X_API_Version: str = Header(None, enum=["1"])
+    integration_id: int, response: Response, X_API_Version: str = Header(None, enum=["1"])
 ):
     pass

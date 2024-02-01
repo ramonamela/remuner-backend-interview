@@ -4,11 +4,15 @@ from typing import List
 from tortoise import transactions
 from tortoise.exceptions import IntegrityError
 
+from app.integrations.infrastructure.persistence.tortoise.services.integration_bo_mapping_service import (
+    IntegrationBOMappingService,
+)
 from app.users.domain.bo.user_bo import UserBO
 from app.users.domain.persistence.user_bo_persistence_interface import UserBOPersistenceInterface
 from app.users.infrastructure.persistence.exceptions.team_bo import TeamNotFoundException
 from app.users.infrastructure.persistence.exceptions.user_bo import (
     RepeatedEmailException,
+    UserHasIntegrationsException,
     UserNotFoundException,
 )
 from app.users.infrastructure.persistence.tortoise.services.team_bo_mapping_service import (
@@ -25,6 +29,7 @@ class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
     def __init__(self):
         self.user_bo_mapping_service = UserBOMappingService()
         self.team_bo_mapping_service = TeamBOMappingService()
+        self.integration_bo_mapping_service = IntegrationBOMappingService()
 
     @classmethod
     async def _add_to_user(cls, user, team_ids):
@@ -72,8 +77,10 @@ class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
         return self._generate_bo(user=user)
 
     async def delete(self, user_id: int):
-        object_to_delete = await User.get(user_id=user_id)
+        object_to_delete = await User.get(user_id=user_id).prefetch_related("integrations")
         if object_to_delete:
+            if len(object_to_delete.integrations) > 0:
+                raise UserHasIntegrationsException()
             await object_to_delete.delete()
         else:
             raise UserNotFoundException()

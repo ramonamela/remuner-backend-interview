@@ -6,3 +6,8 @@ class RepeatedEmailException(Exception):
 class UserNotFoundException(Exception):
     def __init__(self):
         super().__init__("User does not exist")
+
+
+class UserHasIntegrationsException(Exception):
+    def __init__(self):
+        super().__init__("User has integrations")

@@ -29,6 +29,7 @@ class UserCrudOutputMappingServiceV1:
             first_name=user_bo.first_name,
             last_name=user_bo.last_name,
             email=user_bo.email,
+            status=user_bo.status,
             teams=[self._get_team(team) for team in user_bo.teams],
             integrations=[
                 self._get_integration(integration) for integration in user_bo.integrations

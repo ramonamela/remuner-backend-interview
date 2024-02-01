@@ -10,7 +10,6 @@ class IntegrationCrudInputV1(BaseModel):
     name: str
     token: str
     user_id: int
-    status: IntegrationStatus
 
     model_config = {"json_schema_extra": {"examples": [crud_post_input_v1]}}
 
@@ -25,9 +24,10 @@ class IntegrationCrudUserOutputV1(BaseModel):
 class IntegrationCrudOutputV1(BaseModel):
     id: int
     name: str
-    token: str
     status: IntegrationStatus
-    user: IntegrationCrudUserOutputV1
+    user_first_name: str
+    user_last_name: str
+    user_email: str
 
 
 class IntegrationCrudIdOutputV1(BaseModel):

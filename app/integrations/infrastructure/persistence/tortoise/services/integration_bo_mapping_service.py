@@ -9,4 +9,5 @@ class IntegrationBOMappingService:
             name=integration.name,
             token=integration.token,
             status=integration.status,
+            user_id=integration.user_id,
         )

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
 from app.config import DATABASE_URL, models
@@ -13,8 +14,16 @@ async def healthcheck() -> dict[str, str]:
     return {"status": "ok"}
 
 
-app.include_router(integrations_router, prefix="/integrations", tags=["Integrations"])
+app.include_router(integrations_router, prefix="", tags=["Integrations"])
 app.include_router(users_router, prefix="", tags=["Users"])
+
+# Only allow origin where frontend is exposed
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Update this with your frontend's origin
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
 
 register_tortoise(
     app,
