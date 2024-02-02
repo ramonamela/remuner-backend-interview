@@ -19,6 +19,8 @@ services:
     depends_on:
       - postgres
       - redis
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   make_migrations:
     image: remuner-backend-dev
