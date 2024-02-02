@@ -6,7 +6,7 @@ from app.integrations.enums import IntegrationStatus
 
 class Integration(Model):
     integration_id = fields.IntField(pk=True)
-    name = fields.CharField(max_length=50)
+    name = fields.CharField(max_length=50, unique=True)
     token = fields.CharField(max_length=50)
     user = fields.ForeignKeyField("models.User", related_name="integrations")
     status = fields.CharEnumField(enum_type=IntegrationStatus)

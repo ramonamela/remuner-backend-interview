@@ -14,7 +14,7 @@ from app.integrations.infrastructure.api.v1.integration.v1.crud.view_models impo
     IntegrationCrudInputV1,
 )
 from app.integrations.infrastructure.persistence.exceptions.integration_bo import (
-    IntegrationNotFoundException,
+    IntegrationNotFoundException, RepeatedIntegrationNameException,
 )
 
 
@@ -32,7 +32,10 @@ async def integrations_post_v1(
     post_input: IntegrationCrudInputV1,
 ) -> IntegrationCrudIdOutputV1:
     view_controller = CreateIntegrationViewControllers.v1()
-    return await view_controller(input_integration=post_input)
+    try:
+        return await view_controller(input_integration=post_input)
+    except RepeatedIntegrationNameException:
+        raise HTTPException(status_code=409, detail="Integration name already exists in the database")
 
 
 async def integrations__integration_id_post_v1(

@@ -39,7 +39,7 @@ class TeamBOTortoisePersistenceService(TeamBOPersistenceInterface):
         try:
             new_team = await Team.create(name=team_bo.name)
         except IntegrityError as exc:
-            if 'duplicate key value violates unique constraint "teams_name_key"' in str(exc):
+            if 'duplicate key value violates unique constraint' in str(exc):
                 raise RepeatedTeamNameException()
             raise exc
         if team_bo.user_ids is not None and len(team_bo.user_ids) > 0:

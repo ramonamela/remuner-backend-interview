@@ -12,6 +12,7 @@ class UserCrudInputV2(BaseModel):
     last_name: str
     email: str
     teams: List[int] = None
+    integrations: List[int] = None
 
     model_config = {"json_schema_extra": {"examples": [crud_post_input_v2]}}
 

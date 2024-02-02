@@ -4,7 +4,7 @@ from tortoise import transactions
 
 from app.integrations.domain.bo.integration_bo import IntegrationBO
 from app.integrations.infrastructure.persistence.exceptions.integration_bo import (
-    IntegrationNotFoundException,
+    IntegrationNotFoundException, RepeatedIntegrationNameException,
 )
 from app.integrations.infrastructure.persistence.tortoise.services.integration_bo_mapping_service import (
     IntegrationBOMappingService,
@@ -15,7 +15,7 @@ from app.users.infrastructure.persistence.tortoise.services.user_bo_mapping_serv
     UserBOMappingService,
 )
 from app.users.models import Team
-
+from tortoise.exceptions import IntegrityError
 
 class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
 
@@ -26,14 +26,20 @@ class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
     @transactions.atomic()
     async def create(self, integration_bo: IntegrationBO):
         # Add exception in case integration_bo.user.user_id and integration_bo.user_id are both None
-        new_integration = await Integration.create(
-            name=integration_bo.name,
-            token=integration_bo.token,
-            user_id=(
-                integration_bo.user_id if integration_bo.user_id else integration_bo.user.user_id
-            ),
-            status=integration_bo.status,
-        )
+        try:
+            new_integration = await Integration.create(
+                name=integration_bo.name,
+                token=integration_bo.token,
+                user_id=(
+                    integration_bo.user_id if integration_bo.user_id else integration_bo.user.user_id
+                ),
+                status=integration_bo.status,
+            )
+        except IntegrityError as exc:
+            if 'duplicate key value violates unique constraint' in str(exc):
+                raise RepeatedIntegrationNameException()
+            raise exc
+
         integration_bo.id = new_integration.integration_id
         return new_integration.integration_id
 
