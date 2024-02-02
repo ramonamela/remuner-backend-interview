@@ -15,16 +15,16 @@ from app.integrations.api.v1.integration.v1.crud.input_mapping_service import (
 from app.integrations.api.v1.integration.v1.crud.view_models import (
     IntegrationCrudInputV1,
 )
-from app.integrations.dependency_injection.application.view_controllers.v1.integration.crud.create import (
+from app.integrations.dependency_injection.domain.controllers.v1.integration.crud.create import (
     CreateIntegrationControllers,
 )
-from app.integrations.dependency_injection.application.view_controllers.v1.integration.crud.delete import (
+from app.integrations.dependency_injection.domain.controllers.v1.integration.crud.delete import (
     DeleteIntegrationControllers,
 )
-from app.integrations.dependency_injection.application.view_controllers.v1.integration.crud.get import (
+from app.integrations.dependency_injection.domain.controllers.v1.integration.crud.get import (
     GetIntegrationControllers,
 )
-from app.integrations.dependency_injection.application.view_controllers.v1.integration.crud.update import (
+from app.integrations.dependency_injection.domain.controllers.v1.integration.crud.update import (
     UpdateIntegrationControllers,
 )
 from app.integrations.domain.persistence.exceptions.integration_bo import (

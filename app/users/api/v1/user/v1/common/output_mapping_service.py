@@ -1,5 +1,9 @@
 from app.integrations.domain.bo.integration_bo import IntegrationBO
-from app.users.api.v1.user.v1.common.view_models import UserTeamOutputV1, UserIntegrationOutputV1, UserOutputV1
+from app.users.api.v1.user.v1.common.view_models import (
+    UserIntegrationOutputV1,
+    UserOutputV1,
+    UserTeamOutputV1,
+)
 from app.users.domain.bo.team_bo import TeamBO
 from app.users.domain.bo.user_bo import UserBO
 

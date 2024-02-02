@@ -89,3 +89,6 @@ class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
             await object_to_delete.delete()
         else:
             raise IntegrationNotFoundException()
+
+    async def count_elements(self):
+        return await Integration.filter().count()

@@ -3,8 +3,8 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 from app.integrations.enums import IntegrationStatus
-from app.users.enums import UserStatus
 from app.users.api.v1.user.v1.common.swagger_examples import crud_post_input_v1
+from app.users.enums import UserStatus
 
 
 class UserInputV1(BaseModel):

@@ -4,7 +4,7 @@ from fastapi import HTTPException
 
 from app.users.api.v1.user.v1.common.input_mapping_service import UserInputMappingServiceV1
 from app.users.api.v1.user.v1.common.output_mapping_service import UserOutputMappingServiceV1
-from app.users.api.v1.user.v1.common.view_models import UserOutputV1, UserIdOutputV1, UserInputV1
+from app.users.api.v1.user.v1.common.view_models import UserIdOutputV1, UserInputV1, UserOutputV1
 from app.users.dependency_injection.domain.controllers.v1.user.crud.create import (
     CreateUserControllers,
 )
@@ -52,12 +52,14 @@ async def users__user_id_post_v1(user_id: int, post_input: UserInputV1) -> UserI
     view_controller = UpdateUserControllers.v1()
     input_mapping_service = UserInputMappingServiceV1()
     try:
-        return UserIdOutputV1(id=await view_controller(user_id=user_id, user_bo=input_mapping_service(post_input)))
+        return UserIdOutputV1(
+            id=await view_controller(user_id=user_id, user_bo=input_mapping_service(post_input))
+        )
     except UserNotFoundException:
         raise HTTPException(status_code=404, detail="User not found")
 
 
-async def users__user_id_delete_v1(user_id: int) :
+async def users__user_id_delete_v1(user_id: int):
     view_controller = DeleteUserControllers.v1()
     try:
         await view_controller(user_id=user_id)

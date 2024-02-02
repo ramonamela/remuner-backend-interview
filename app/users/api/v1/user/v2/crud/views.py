@@ -4,15 +4,21 @@ from fastapi import HTTPException
 
 from app.users.api.v1.user.v2.common.input_mapping_service import UserInputMappingServiceV2
 from app.users.api.v1.user.v2.common.output_mapping_service import UserOutputMappingServiceV2
-from app.users.api.v1.user.v2.common.view_models import UserOutputV2, UserInputV2, UserIdOutputV2
-from app.users.dependency_injection.domain.controllers.v1.user.crud.create import CreateUserControllers
-
+from app.users.api.v1.user.v2.common.view_models import UserIdOutputV2, UserInputV2, UserOutputV2
+from app.users.dependency_injection.domain.controllers.v1.user.crud.create import (
+    CreateUserControllers,
+)
 from app.users.dependency_injection.domain.controllers.v1.user.crud.get import (
     GetUserControllers,
 )
-from app.users.dependency_injection.domain.controllers.v1.user.crud.update import UpdateUserControllers
+from app.users.dependency_injection.domain.controllers.v1.user.crud.update import (
+    UpdateUserControllers,
+)
 from app.users.domain.persistence.exceptions.team_bo import TeamNotFoundException
-from app.users.domain.persistence.exceptions.user_bo import RepeatedEmailException, UserNotFoundException
+from app.users.domain.persistence.exceptions.user_bo import (
+    RepeatedEmailException,
+    UserNotFoundException,
+)
 
 
 async def users_get_v2() -> List[UserOutputV2]:

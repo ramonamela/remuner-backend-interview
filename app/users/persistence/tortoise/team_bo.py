@@ -95,3 +95,6 @@ class TeamBOTortoisePersistenceService(TeamBOPersistenceInterface):
             await object_to_delete.delete()
         else:
             raise TeamNotFoundException()
+
+    async def count_elements(self):
+        return await Team.filter().count()

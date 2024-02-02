@@ -10,9 +10,26 @@ from app.integrations.api.v1.integration.v1.crud.views import (
     integrations_get_v1,
     integrations_post_v1,
 )
+from app.integrations.api.v1.integration.v1.utilities.views import integrations_stats_get_v1
 from remuner_library.fastapi_extensions import custom_router_decorator
 
 router = APIRouter()
+
+
+@router.post("/integrations")
+@custom_router_decorator(versions={"1": integrations_post_v1})
+async def integrations_post(
+    post_input: IntegrationCrudInputV1,
+    response: Response,
+    X_API_Version: str = Header(None, enum=["1"]),
+):
+    pass
+
+
+@router.get("/integrations/stats")
+@custom_router_decorator(versions={"1": integrations_stats_get_v1})
+async def integrations_stats_get(response: Response, X_API_Version: str = Header(None, enum=["1"])):
+    pass
 
 
 @router.get("/integrations")
@@ -25,16 +42,6 @@ async def integrations_get(response: Response, X_API_Version: str = Header(None,
 @custom_router_decorator(versions={"1": integrations__integration_id_get_v1})
 async def integrations__integration_id_get(
     integration_id: int, response: Response, X_API_Version: str = Header(None, enum=["1"])
-):
-    pass
-
-
-@router.post("/integrations")
-@custom_router_decorator(versions={"1": integrations_post_v1})
-async def integrations_post(
-    post_input: IntegrationCrudInputV1,
-    response: Response,
-    X_API_Version: str = Header(None, enum=["1"]),
 ):
     pass
 
