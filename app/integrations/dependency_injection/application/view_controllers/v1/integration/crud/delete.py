@@ -4,13 +4,13 @@ from app.integrations.dependency_injection.persistence.integration_bo import (
     IntegrationBOPersistenceServices,
 )
 from app.integrations.domain.controllers.v1.integration.crud.delete import (
-    DeleteIntegrationViewControllerV1,
+    DeleteIntegrationControllerV1,
 )
 
 
-class DeleteIntegrationViewControllers(containers.DeclarativeContainer):
+class DeleteIntegrationControllers(containers.DeclarativeContainer):
 
     v1 = providers.Singleton(
-        DeleteIntegrationViewControllerV1,
+        DeleteIntegrationControllerV1,
         integration_bo_persistence_service=IntegrationBOPersistenceServices.remuner,
     )

@@ -3,7 +3,7 @@ from app.users.domain.persistence.interfaces.user_bo_persistence_interface impor
 )
 
 
-class DeleteUserViewControllerV1:
+class DeleteUserControllerV1:
     def __init__(self, user_bo_persistence_service):
         self.user_bo_persistence_service: UserBOPersistenceInterface = user_bo_persistence_service
 

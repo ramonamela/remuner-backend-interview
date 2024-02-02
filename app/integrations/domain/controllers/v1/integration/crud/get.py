@@ -6,7 +6,7 @@ from app.integrations.domain.persistence.interfaces.integration_bo_persistence_i
 )
 
 
-class GetIntegrationViewControllerV1:
+class GetIntegrationControllerV1:
     def __init__(self, integration_bo_persistence_service):
         self.integration_bo_persistence_service: IntegrationBOPersistenceInterface = (
             integration_bo_persistence_service

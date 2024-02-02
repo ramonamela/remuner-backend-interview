@@ -1,10 +1,10 @@
-from app.users.api.v1.user.v2.crud.view_models import UserCrudInputV2
+from app.users.api.v1.user.v2.common.view_models import UserInputV2
 from app.users.domain.bo.user_bo import UserBO
 
 
-class UserCrudInputMappingServiceV2:
+class UserInputMappingServiceV2:
 
-    def __call__(self, input_user: UserCrudInputV2) -> UserBO:
+    def __call__(self, input_user: UserInputV2) -> UserBO:
         return UserBO(
             first_name=input_user.name,
             last_name=input_user.last_name,

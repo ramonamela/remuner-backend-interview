@@ -5,7 +5,7 @@ from app.integrations.domain.persistence.interfaces.integration_bo_persistence_i
 from app.integrations.enums import IntegrationStatus
 
 
-class CreateIntegrationViewControllerV1:
+class CreateIntegrationControllerV1:
     def __init__(self, integration_bo_persistence_service):
         self.integration_bo_persistence_service: IntegrationBOPersistenceInterface = (
             integration_bo_persistence_service

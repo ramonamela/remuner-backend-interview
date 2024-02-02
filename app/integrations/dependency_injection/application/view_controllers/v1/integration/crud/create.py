@@ -4,13 +4,13 @@ from app.integrations.dependency_injection.persistence.integration_bo import (
     IntegrationBOPersistenceServices,
 )
 from app.integrations.domain.controllers.v1.integration.crud.create import (
-    CreateIntegrationViewControllerV1,
+    CreateIntegrationControllerV1,
 )
 
 
-class CreateIntegrationViewControllers(containers.DeclarativeContainer):
+class CreateIntegrationControllers(containers.DeclarativeContainer):
 
     v1 = providers.Singleton(
-        CreateIntegrationViewControllerV1,
+        CreateIntegrationControllerV1,
         integration_bo_persistence_service=IntegrationBOPersistenceServices.remuner,
     )

@@ -4,7 +4,7 @@ from app.integrations.domain.persistence.interfaces.integration_bo_persistence_i
 )
 
 
-class UpdateIntegrationViewControllerV1:
+class UpdateIntegrationControllerV1:
     def __init__(self, integration_bo_persistence_service):
         self.integration_bo_persistence_service: IntegrationBOPersistenceInterface = (
             integration_bo_persistence_service

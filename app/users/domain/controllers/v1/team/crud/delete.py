@@ -3,7 +3,7 @@ from app.users.domain.persistence.interfaces.team_bo_persistence_interface impor
 )
 
 
-class DeleteTeamViewControllerV1:
+class DeleteTeamControllerV1:
     def __init__(self, team_bo_persistence_service):
         self.team_bo_persistence_service: TeamBOPersistenceInterface = team_bo_persistence_service
 

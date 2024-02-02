@@ -4,16 +4,12 @@ from typing import List
 from tortoise import transactions
 from tortoise.exceptions import IntegrityError
 
-from app.integrations.persistence.tortoise import (
-    IntegrationBOMappingService,
-)
+from app.integrations.persistence.tortoise.services.integration_bo_mapping_service import IntegrationBOMappingService
 from app.users.domain.bo.user_bo import UserBO
-from app.users.domain.persistence.exceptions import (
-    RepeatedEmailException,
-    TeamNotFoundException,
-    UserHasIntegrationsException,
-    UserNotFoundException,
-)
+from app.users.domain.persistence.exceptions.team_bo import TeamNotFoundException
+from app.users.domain.persistence.exceptions.user_bo import RepeatedEmailException, UserNotFoundException, \
+    UserHasIntegrationsException
+
 from app.users.domain.persistence.interfaces.user_bo_persistence_interface import (
     UserBOPersistenceInterface,
 )
@@ -72,7 +68,7 @@ class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
                 "teams", "integrations"
             )
         except Exception:
-            raise UserNotFoundException
+            raise UserNotFoundException()
         try:
             await user_to_update.update_from_dict(
                 {

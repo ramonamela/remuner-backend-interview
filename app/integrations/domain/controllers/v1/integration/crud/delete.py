@@ -3,7 +3,7 @@ from app.users.domain.persistence.interfaces.team_bo_persistence_interface impor
 )
 
 
-class DeleteIntegrationViewControllerV1:
+class DeleteIntegrationControllerV1:
     def __init__(self, integration_bo_persistence_service):
         self.integration_bo_persistence_service: TeamBOPersistenceInterface = (
             integration_bo_persistence_service

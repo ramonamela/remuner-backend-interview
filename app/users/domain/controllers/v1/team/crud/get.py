@@ -6,7 +6,7 @@ from app.users.domain.persistence.interfaces.team_bo_persistence_interface impor
 )
 
 
-class GetTeamViewControllerV1:
+class GetTeamControllerV1:
     def __init__(self, team_bo_persistence_service):
         self.team_bo_persistence_service: TeamBOPersistenceInterface = team_bo_persistence_service
 

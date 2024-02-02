@@ -4,13 +4,13 @@ from app.integrations.dependency_injection.persistence import (
     IntegrationBOPersistenceServices,
 )
 from app.integrations.domain.controllers.v1.integration.utilities.count import (
-    CountIntegrationViewControllerV1,
+    CountIntegrationControllerV1,
 )
 
 
-class CountIntegrationViewControllers(containers.DeclarativeContainer):
+class CountIntegrationControllers(containers.DeclarativeContainer):
 
     v1 = providers.Singleton(
-        CountIntegrationViewControllerV1,
+        CountIntegrationControllerV1,
         integration_bo_persistence_service=IntegrationBOPersistenceServices.remuner,
     )

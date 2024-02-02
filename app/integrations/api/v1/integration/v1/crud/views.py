@@ -16,16 +16,16 @@ from app.integrations.api.v1.integration.v1.crud.view_models import (
     IntegrationCrudInputV1,
 )
 from app.integrations.dependency_injection.application.view_controllers.v1.integration.crud.create import (
-    CreateIntegrationViewControllers,
+    CreateIntegrationControllers,
 )
 from app.integrations.dependency_injection.application.view_controllers.v1.integration.crud.delete import (
-    DeleteIntegrationViewControllers,
+    DeleteIntegrationControllers,
 )
 from app.integrations.dependency_injection.application.view_controllers.v1.integration.crud.get import (
-    GetIntegrationViewControllers,
+    GetIntegrationControllers,
 )
 from app.integrations.dependency_injection.application.view_controllers.v1.integration.crud.update import (
-    UpdateIntegrationViewControllers,
+    UpdateIntegrationControllers,
 )
 from app.integrations.domain.persistence.exceptions.integration_bo import (
     IntegrationNotFoundException,
@@ -34,13 +34,13 @@ from app.integrations.domain.persistence.exceptions.integration_bo import (
 
 
 async def integrations_get_v1() -> List[IntegrationOutputV1]:
-    view_controller = GetIntegrationViewControllers.v1()
+    view_controller = GetIntegrationControllers.v1()
     output_mapping_service = IntegrationOutputMappingServiceV1()
     return [output_mapping_service(integration_bo) for integration_bo in await view_controller()]
 
 
 async def integrations__integration_id_get_v1(integration_id: int) -> IntegrationOutputV1:
-    view_controller = GetIntegrationViewControllers.v1()
+    view_controller = GetIntegrationControllers.v1()
     output_mapping_service = IntegrationOutputMappingServiceV1()
     return await output_mapping_service(view_controller(integration_id=integration_id))
 
@@ -48,7 +48,7 @@ async def integrations__integration_id_get_v1(integration_id: int) -> Integratio
 async def integrations_post_v1(
     post_input: IntegrationCrudInputV1,
 ) -> IntegrationIdOutputV1:
-    view_controller = CreateIntegrationViewControllers.v1()
+    view_controller = CreateIntegrationControllers.v1()
     input_mapping_service = IntegrationCrudInputMappingServiceV1()
     try:
         return IntegrationIdOutputV1(
@@ -63,7 +63,7 @@ async def integrations_post_v1(
 async def integrations__integration_id_post_v1(
     integration_id: int, post_input: IntegrationCrudInputV1
 ) -> IntegrationIdOutputV1:
-    view_controller = UpdateIntegrationViewControllers.v1()
+    view_controller = UpdateIntegrationControllers.v1()
     input_mapping_service = IntegrationCrudInputMappingServiceV1()
 
     integration_bo = input_mapping_service(input_integration=post_input)
@@ -77,9 +77,10 @@ async def integrations__integration_id_post_v1(
 
 async def integrations__integration_id_delete_v1(
     integration_id: int,
-) -> IntegrationIdOutputV1:
-    view_controller = DeleteIntegrationViewControllers.v1()
+):
+    view_controller = DeleteIntegrationControllers.v1()
     try:
-        return await view_controller(integration_id=integration_id)
+        await view_controller(integration_id=integration_id)
+        return {}
     except IntegrationNotFoundException:
         raise HTTPException(status_code=404, detail="Team not found")

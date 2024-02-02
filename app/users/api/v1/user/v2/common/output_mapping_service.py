@@ -1,30 +1,27 @@
 from app.integrations.domain.bo.integration_bo import IntegrationBO
-from app.users.api.v1.user.v2.crud.view_models import (
-    UserCrudIntegrationOutputV2,
-    UserCrudOutputV2,
-    UserCrudTeamOutputV2,
-)
+from app.users.api.v1.user.v2.common.view_models import UserTeamOutputV2, UserIntegrationOutputV2, UserOutputV2
+
 from app.users.domain.bo.team_bo import TeamBO
 from app.users.domain.bo.user_bo import UserBO
 
 
-class UserCrudOutputMappingServiceV2:
+class UserOutputMappingServiceV2:
 
-    def _get_team(self, team_bo: TeamBO) -> UserCrudTeamOutputV2:
-        return UserCrudTeamOutputV2(
+    def _get_team(self, team_bo: TeamBO) -> UserTeamOutputV2:
+        return UserTeamOutputV2(
             id=team_bo.id,
             name=team_bo.name,
         )
 
-    def _get_integration(self, integration_bo: IntegrationBO) -> UserCrudIntegrationOutputV2:
-        return UserCrudIntegrationOutputV2(
+    def _get_integration(self, integration_bo: IntegrationBO) -> UserIntegrationOutputV2:
+        return UserIntegrationOutputV2(
             id=integration_bo.id,
             name=integration_bo.name,
             status=integration_bo.status,
         )
 
-    def __call__(self, user_bo: UserBO) -> UserCrudOutputV2:
-        return UserCrudOutputV2(
+    def __call__(self, user_bo: UserBO) -> UserOutputV2:
+        return UserOutputV2(
             id=user_bo.id,
             name=user_bo.first_name,
             last_name=user_bo.last_name,

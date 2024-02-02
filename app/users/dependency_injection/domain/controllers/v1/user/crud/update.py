@@ -1,28 +1,12 @@
 from dependency_injector import containers, providers
 
-from app.users.api.v1.user.v1.common import (
-    UserCrudInputMappingServiceV1,
-)
-from app.users.api.v1.user.v2.common import (
-    UserCrudInputMappingServiceV2,
-)
-from app.users.application.view_controllers.v1.user.v2.crud.update import UpdateUserViewControllerV2
-from app.users.dependency_injection.persistence import (
-    UserBOPersistenceServices,
-)
-from app.users.domain.controllers.v1.user.crud import UpdateUserViewControllerV1
+from app.users.dependency_injection.persistence.user_bo import UserBOPersistenceServices
+from app.users.domain.controllers.v1.user.crud.update import UpdateUserControllerV1
 
 
-class UpdateUserViewControllers(containers.DeclarativeContainer):
+class UpdateUserControllers(containers.DeclarativeContainer):
 
     v1 = providers.Singleton(
-        UpdateUserViewControllerV1,
-        input_mapping_service=UserCrudInputMappingServiceV1(),
-        user_bo_persistence_service=UserBOPersistenceServices.remuner,
-    )
-
-    v2 = providers.Singleton(
-        UpdateUserViewControllerV2,
-        input_mapping_service=UserCrudInputMappingServiceV2(),
+        UpdateUserControllerV1,
         user_bo_persistence_service=UserBOPersistenceServices.remuner,
     )
