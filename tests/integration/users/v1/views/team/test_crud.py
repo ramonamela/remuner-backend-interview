@@ -1,7 +1,7 @@
 import pytest
 from async_asgi_testclient import TestClient
 
-from app.users.infrastructure.api.v1.team.v1.crud.swagger_examples import crud_post_input_v1
+from app.users.api.v1.team.v1.crud.swagger_examples import crud_post_input_v1
 
 
 @pytest.mark.asyncio
