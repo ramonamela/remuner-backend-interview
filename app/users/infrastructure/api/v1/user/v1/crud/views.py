@@ -11,6 +11,9 @@ from app.users.dependency_injection.application.view_controllers.v1.user.crud.de
 from app.users.dependency_injection.application.view_controllers.v1.user.crud.get import (
     GetUserViewControllers,
 )
+from app.users.dependency_injection.application.view_controllers.v1.user.crud.update import (
+    UpdateUserViewControllers,
+)
 from app.users.infrastructure.api.v1.user.v1.crud.view_models import (
     UserCrudIdOutputV1,
     UserCrudInputV1,
@@ -45,7 +48,11 @@ async def users_post_v1(post_input: UserCrudInputV1) -> UserCrudIdOutputV1:
 
 
 async def users__user_id_post_v1(user_id: int, post_input: UserCrudInputV1) -> UserCrudIdOutputV1:
-    return UserCrudIdOutputV1(**{"id": 1})
+    view_controller = UpdateUserViewControllers.v1()
+    try:
+        return await view_controller(user_id=user_id, input_user=post_input)
+    except UserNotFoundException:
+        raise HTTPException(status_code=404, detail="User not found")
 
 
 async def users__user_id_delete_v1(user_id: int) -> UserCrudIdOutputV1:

@@ -1,10 +1,12 @@
 from typing import List
 
 from tortoise import transactions
+from tortoise.exceptions import IntegrityError
 
 from app.integrations.domain.bo.integration_bo import IntegrationBO
 from app.integrations.infrastructure.persistence.exceptions.integration_bo import (
-    IntegrationNotFoundException, RepeatedIntegrationNameException,
+    IntegrationNotFoundException,
+    RepeatedIntegrationNameException,
 )
 from app.integrations.infrastructure.persistence.tortoise.services.integration_bo_mapping_service import (
     IntegrationBOMappingService,
@@ -15,7 +17,7 @@ from app.users.infrastructure.persistence.tortoise.services.user_bo_mapping_serv
     UserBOMappingService,
 )
 from app.users.models import Team
-from tortoise.exceptions import IntegrityError
+
 
 class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
 
@@ -31,17 +33,40 @@ class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
                 name=integration_bo.name,
                 token=integration_bo.token,
                 user_id=(
-                    integration_bo.user_id if integration_bo.user_id else integration_bo.user.user_id
+                    integration_bo.user_id
+                    if integration_bo.user_id
+                    else integration_bo.user.user_id
                 ),
                 status=integration_bo.status,
             )
         except IntegrityError as exc:
-            if 'duplicate key value violates unique constraint' in str(exc):
+            if "duplicate key value violates unique constraint" in str(exc):
                 raise RepeatedIntegrationNameException()
             raise exc
 
         integration_bo.id = new_integration.integration_id
         return new_integration.integration_id
+
+    @transactions.atomic()
+    async def update(self, integration_bo: IntegrationBO):
+        try:
+            integration_to_update = await Integration.get(integration_id=integration_bo.id)
+        except Exception:
+            raise IntegrationNotFoundException
+        try:
+            # Only update token if provided
+            update_dict = {
+                "name": integration_bo.name,
+                "user_id": integration_bo.user_id,
+            }
+            if integration_bo.token is not None:
+                update_dict.update(token=integration_bo.token)
+            await integration_to_update.update_from_dict(update_dict).save()
+        except IntegrityError as exc:
+            if "duplicate key value violates unique constraint" in str(exc):
+                raise RepeatedIntegrationNameException()
+        # await self._add_integrations_to_user(user_to_update, user_bo.team_ids)
+        return integration_to_update.integration_id
 
     def _generate_bo(self, integration: Integration) -> IntegrationBO:
         integration_bo = self.integration_bo_mapping_service(integration=integration)

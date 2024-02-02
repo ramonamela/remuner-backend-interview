@@ -9,12 +9,16 @@ from app.integrations.dependency_injection.application.view_controllers.v1.integ
 from app.integrations.dependency_injection.application.view_controllers.v1.integration.crud.get import (
     GetIntegrationViewControllers,
 )
+from app.integrations.dependency_injection.application.view_controllers.v1.integration.crud.update import (
+    UpdateIntegrationViewControllers,
+)
 from app.integrations.infrastructure.api.v1.integration.v1.crud.view_models import (
     IntegrationCrudIdOutputV1,
     IntegrationCrudInputV1,
 )
 from app.integrations.infrastructure.persistence.exceptions.integration_bo import (
-    IntegrationNotFoundException, RepeatedIntegrationNameException,
+    IntegrationNotFoundException,
+    RepeatedIntegrationNameException,
 )
 
 
@@ -35,13 +39,19 @@ async def integrations_post_v1(
     try:
         return await view_controller(input_integration=post_input)
     except RepeatedIntegrationNameException:
-        raise HTTPException(status_code=409, detail="Integration name already exists in the database")
+        raise HTTPException(
+            status_code=409, detail="Integration name already exists in the database"
+        )
 
 
 async def integrations__integration_id_post_v1(
     integration_id: int, post_input: IntegrationCrudInputV1
 ) -> IntegrationCrudIdOutputV1:
-    return IntegrationCrudIdOutputV1(**{"id": 1})
+    view_controller = UpdateIntegrationViewControllers.v1()
+    try:
+        return await view_controller(integration_id=integration_id, input_integration=post_input)
+    except IntegrationNotFoundException:
+        raise HTTPException(status_code=404, detail="Integration not found")
 
 
 async def integrations__integration_id_delete_v1(

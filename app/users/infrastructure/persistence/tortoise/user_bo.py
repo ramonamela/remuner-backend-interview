@@ -32,12 +32,17 @@ class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
         self.integration_bo_mapping_service = IntegrationBOMappingService()
 
     @classmethod
-    async def _add_to_user(cls, user, team_ids):
+    async def _add_teams_to_user(cls, user, team_ids):
         teams = await Team.filter(team_id__in=team_ids).only("team_id")
         if len(teams) != len(team_ids):
             raise TeamNotFoundException()
-        tasks = [user.teams.add(team) for team in teams]
-        await asyncio.gather(*tasks)
+        remove_users = []
+        if len(user.teams) > 0:
+            remove_users = [
+                user.teams.remove(team) for team in user.teams if team.team_id not in team_ids
+            ]
+        add_users = [user.teams.add(team) for team in teams if team.team_id in team_ids]
+        await asyncio.gather(*add_users, *remove_users)
 
     @transactions.atomic()
     async def create(self, user_bo: UserBO):
@@ -48,14 +53,39 @@ class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
                 email=user_bo.email,
                 status=user_bo.status,
             )
+            await new_user.fetch_related("teams")
         except IntegrityError as exc:
             if "duplicate key value violates unique constraint" in str(exc):
                 raise RepeatedEmailException()
             raise exc
         if user_bo.team_ids is not None and len(user_bo.team_ids) > 0:
-            await self._add_to_user(new_user, user_bo.team_ids)
+            await self._add_teams_to_user(new_user, user_bo.team_ids)
         user_bo.id = new_user.user_id
         return new_user.user_id
+
+    @transactions.atomic()
+    async def update(self, user_bo: UserBO):
+        try:
+            user_to_update = await User.get(user_id=user_bo.id).prefetch_related(
+                "teams", "integrations"
+            )
+        except Exception:
+            raise UserNotFoundException
+        try:
+            await user_to_update.update_from_dict(
+                {
+                    "first_name": user_bo.first_name,
+                    "last_name": user_bo.last_name,
+                    "email": user_bo.email,
+                    "status": user_bo.status,
+                }
+            ).save()
+        except IntegrityError as exc:
+            if "duplicate key value violates unique constraint" in str(exc):
+                raise RepeatedEmailException()
+        await self._add_teams_to_user(user_to_update, user_bo.team_ids)
+        # await self._add_integrations_to_user(user_to_update, user_bo.team_ids)
+        return user_to_update.user_id
 
     def _generate_bo(self, user: User) -> UserBO:
         user_bo = self.user_bo_mapping_service(user=user)

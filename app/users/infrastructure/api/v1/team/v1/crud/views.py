@@ -11,6 +11,9 @@ from app.users.dependency_injection.application.view_controllers.v1.team.crud.de
 from app.users.dependency_injection.application.view_controllers.v1.team.crud.get import (
     GetTeamViewControllers,
 )
+from app.users.dependency_injection.application.view_controllers.v1.team.crud.update import (
+    UpdateTeamViewControllers,
+)
 from app.users.infrastructure.api.v1.team.v1.crud.view_models import (
     TeamCrudIdOutputV1,
     TeamCrudInputV1,
@@ -40,7 +43,11 @@ async def teams_post_v1(post_input: TeamCrudInputV1) -> TeamCrudIdOutputV1:
 
 
 async def teams__team_id_post_v1(team_id: int, post_input: TeamCrudInputV1) -> TeamCrudIdOutputV1:
-    return TeamCrudIdOutputV1(**{"id": 1})
+    view_controller = UpdateTeamViewControllers.v1()
+    try:
+        return await view_controller(team_id=team_id, input_team=post_input)
+    except TeamNotFoundException:
+        raise HTTPException(status_code=404, detail="Team not found")
 
 
 async def teams__team_id_delete_v1(team_id: int):

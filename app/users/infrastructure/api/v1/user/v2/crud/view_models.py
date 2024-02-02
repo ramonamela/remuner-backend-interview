@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.integrations.enums import IntegrationStatus
 from app.users.enums import UserStatus
@@ -8,9 +8,10 @@ from app.users.infrastructure.api.v1.user.v2.crud.swagger_examples import crud_p
 
 
 class UserCrudInputV2(BaseModel):
-    name: str
-    last_name: str
-    email: str
+    id: Optional[int] = None
+    name: str = Field(min_length=1)
+    last_name: str = Field(min_length=1)
+    email: str = Field(min_length=1)
     teams: List[int] = None
     integrations: List[int] = None
 
@@ -19,20 +20,20 @@ class UserCrudInputV2(BaseModel):
 
 class UserCrudTeamOutputV2(BaseModel):
     id: int
-    name: str
+    name: str = Field(min_length=1)
 
 
 class UserCrudIntegrationOutputV2(BaseModel):
     id: int
-    name: str
+    name: str = Field(min_length=1)
     status: IntegrationStatus
 
 
 class UserCrudOutputV2(BaseModel):
     id: int
-    name: str
-    last_name: str
-    email: str
+    name: str = Field(min_length=1)
+    last_name: str = Field(min_length=1)
+    email: str = Field(min_length=1)
     status: UserStatus
     teams: List[UserCrudTeamOutputV2]
     integrations: List[UserCrudIntegrationOutputV2]

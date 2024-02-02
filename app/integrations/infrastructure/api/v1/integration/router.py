@@ -43,6 +43,7 @@ async def integrations_post(
 @custom_router_decorator(versions={"1": integrations__integration_id_post_v1})
 async def integrations__integration_id_post(
     integration_id: int,
+    post_input: IntegrationCrudInputV1,
     response: Response,
     X_API_Version: str = Header(None, enum=["1"]),
 ):
