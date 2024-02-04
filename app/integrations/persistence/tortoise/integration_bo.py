@@ -80,6 +80,10 @@ class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
         integration = await Integration.get(integration_id=integration_id).prefetch_related("users")
         return self._generate_bo(integration=integration)
 
+    async def get_integrations_for_user(self, user_id: int):
+        integrations = await Integration.filter(user_id=user_id)
+        return list(map(lambda integration: self._generate_bo(integration), integrations))
+
     @transactions.atomic()
     async def delete(self, integration_id: int):
         object_to_delete = await Integration.get(integration_id=integration_id)

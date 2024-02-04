@@ -13,20 +13,17 @@ from app.integrations.models import Integration
 from app.integrations.persistence.tortoise.services.integration_bo_mapping_service import (
     IntegrationBOMappingService,
 )
+from app.users.domain.bo.user_bo import UserBO
 from app.users.domain.persistence.interfaces.team_bo_persistence_interface import (
     TeamBOPersistenceInterface,
-)
-from app.users.persistence.tortoise.services.user_bo_mapping_service import (
-    UserBOMappingService,
 )
 from remuner_library.persistences.key_value_store.key_value_interface import KeyValueInterface
 
 
 class IntegrationBOCachedTortoisePersistenceService(TeamBOPersistenceInterface):
 
-    def __init__(self, key_value_store: Optional[KeyValueInterface] = None):
+    def __init__(self, key_value_store: KeyValueInterface):
         self.integration_bo_mapping_service = IntegrationBOMappingService()
-        self.user_bo_mapping_service = UserBOMappingService()
 
         self.key_value_store = key_value_store
 
@@ -84,18 +81,33 @@ class IntegrationBOCachedTortoisePersistenceService(TeamBOPersistenceInterface):
                 raise RepeatedIntegrationNameException()
         return integration_to_update.integration_id
 
-    def _generate_bo(self, integration: Integration) -> IntegrationBO:
+    def _generate_bo(
+        self, integration: Integration, user_bo: Optional[UserBO] = None
+    ) -> IntegrationBO:
         integration_bo = self.integration_bo_mapping_service(integration=integration)
-        integration_bo.user = self.user_bo_mapping_service(integration.user)
+        if user_bo is not None:
+            integration_bo.user = user_bo
         return integration_bo
 
     async def get_all(self) -> List[IntegrationBO]:
         integrations = await Integration.filter().prefetch_related("user")
+        user_ids = list(map(lambda integration: integration.user_id, integrations))
         return list(map(lambda integration: self._generate_bo(integration), integrations))
 
     async def get(self, integration_id: int) -> IntegrationBO:
         integration = await Integration.get(integration_id=integration_id).prefetch_related("users")
         return self._generate_bo(integration=integration)
+
+    async def get_integrations_for_user(self, user_id: int):
+        integrations = await Integration.filter(user_id=user_id)
+        return list(map(lambda integration: self._generate_bo(integration), integrations))
+
+    async def count_integrations_for_user(self, user_id: int):
+        return await Integration.filter(user_id=user_id).count()
+
+    async def get_integrations_for_users_in(self, user_ids: List[int]):
+        integrations = await Integration.filter(user_id__in=user_ids)
+        return list(map(lambda integration: self._generate_bo(integration), integrations))
 
     @transactions.atomic()
     async def delete(self, integration_id: int):

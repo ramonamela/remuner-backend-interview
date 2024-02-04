@@ -4,6 +4,9 @@ from typing import List
 from tortoise import transactions
 from tortoise.exceptions import IntegrityError
 
+from app.integrations.domain.persistence.interfaces.integration_bo_persistence_interface import (
+    IntegrationBOPersistenceInterface,
+)
 from app.integrations.persistence.tortoise.services.integration_bo_mapping_service import (
     IntegrationBOMappingService,
 )
@@ -28,13 +31,16 @@ from app.users.persistence.tortoise.services.user_bo_mapping_service import (
 
 class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
 
-    def __init__(self):
+    def __init__(self, integration_bo_persistence_service):
         self.user_bo_mapping_service = UserBOMappingService()
         self.team_bo_mapping_service = TeamBOMappingService()
         self.integration_bo_mapping_service = IntegrationBOMappingService()
+        self.integration_bo_persistence_service: IntegrationBOPersistenceInterface = (
+            integration_bo_persistence_service
+        )
 
     @classmethod
-    async def _add_teams_to_user(cls, user, team_ids) -> int:
+    async def _add_teams_to_user(cls, user, team_ids):
         teams = await Team.filter(team_id__in=team_ids).only("team_id")
         if len(teams) != len(team_ids):
             raise TeamNotFoundException()
@@ -86,32 +92,47 @@ class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
             if "duplicate key value violates unique constraint" in str(exc):
                 raise RepeatedEmailException()
         await self._add_teams_to_user(user_to_update, user_bo.team_ids)
-        # await self._add_integrations_to_user(user_to_update, user_bo.team_ids)
         return user_to_update.user_id
 
     def _generate_bo(self, user: User) -> UserBO:
         user_bo = self.user_bo_mapping_service(user=user)
         user_bo.teams = list(map(lambda team: self.team_bo_mapping_service(team), user.teams))
-        user_bo.integrations = list(
-            map(
-                lambda integration: self.integration_bo_mapping_service(integration),
-                user.integrations,
-            )
-        )
         return user_bo
 
     async def get_all(self) -> List[UserBO]:
-        users = await User.filter().prefetch_related("teams", "integrations")
-        return list(map(lambda user: self._generate_bo(user), users))
+        users = await User.filter().prefetch_related("teams")
+        user_bos = []
+        for user in users:
+            current_user_bo = self._generate_bo(user)
+            current_user_bo.integrations = []
+            user_bos.append(current_user_bo)
+        user_bos_dict = {
+            user_bo.id: user_bo for user_bo in user_bos
+        }
+        user_ids = list(map(lambda user_bo: user_bo.id, user_bos))
+        integration_bos = await self.integration_bo_persistence_service.get_integrations_for_users_in(user_ids=user_ids)
+        for integration_bo in integration_bos:
+            user_bos_dict[integration_bo.user_id].integrations.append(integration_bo)
+        return user_bos
 
     async def get(self, user_id: int) -> UserBO:
         user = await User.get(user_id=user_id).prefetch_related("teams", "integrations")
-        return self._generate_bo(user=user)
+        self.integration_bo_persistence_service.get_integrations_for_user(user_id=user_id)
+        user_bo = self._generate_bo(user=user)
+        user_bo.integrations = self.integration_bo_persistence_service.get_integrations_for_user(user_id=user.user_id)
+        return user_bo
 
     async def delete(self, user_id: int):
         object_to_delete = await User.get(user_id=user_id).prefetch_related("integrations")
         if object_to_delete:
-            if len(object_to_delete.integrations) > 0:
+            if (
+                len(
+                    self.integration_bo_persistence_service.get_integrations_for_user(
+                        user_id=user_id
+                    )
+                )
+                > 0
+            ):
                 raise UserHasIntegrationsException()
             await object_to_delete.delete()
         else:

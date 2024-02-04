@@ -16,7 +16,8 @@ class IntegrationBOPersistenceServices(containers.DeclarativeContainer):
     )
 
     cached_tortoise = providers.Singleton(
-        IntegrationBOCachedTortoisePersistenceService, key_value_store=RedisCache()
+        IntegrationBOCachedTortoisePersistenceService,
+        key_value_store=RedisCache(),
     )
 
     remuner = cached_tortoise
