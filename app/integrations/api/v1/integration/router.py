@@ -11,7 +11,7 @@ from app.integrations.api.v1.integration.v1.crud.views import (
     integrations_post_v1,
 )
 from app.integrations.api.v1.integration.v1.utilities.views import integrations_stats_get_v1
-from remuner_library.fastapi_extensions import custom_router_decorator
+from remuner_library.fast_api_extension.fastapi_extensions import custom_router_decorator
 
 router = APIRouter()
 

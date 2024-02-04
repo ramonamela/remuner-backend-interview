@@ -23,16 +23,27 @@ from app.users.persistence.tortoise.services.user_bo_mapping_service import (
 from remuner_library.persistences.key_value_store.key_value_interface import KeyValueInterface
 import asyncio
 from typing import Optional
-class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
+class IntegrationBOCachedTortoisePersistenceService(TeamBOPersistenceInterface):
 
 
-    def __init__(self):
+    def __init__(self, key_value_store: Optional[KeyValueInterface] = None):
         self.integration_bo_mapping_service = IntegrationBOMappingService()
         self.user_bo_mapping_service = UserBOMappingService()
 
+        self.key_value_store = key_value_store
+
+        self.initialized = False
+
+    async def key_value_store_initialization(self):
+        if self.key_value_store is not None and not self.initialized:
+            counter = await Integration.filter().count()
+            await self.key_value_store.set_if_not_exists(key_value_settings.integrations_counter_key, counter)
+            self.initialized = True
 
     @transactions.atomic()
     async def create(self, integration_bo: IntegrationBO):
+        if self.key_value_store is not None and not self.initialized:
+            await self.key_value_store_initialization()
         # Add exception in case integration_bo.user.user_id and integration_bo.user_id are both None
         try:
             new_integration = await Integration.create(
@@ -50,6 +61,7 @@ class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
                 raise RepeatedIntegrationNameException()
             raise exc
         integration_bo.id = new_integration.integration_id
+        await self.key_value_store.atomic_key_increment(key_value_settings.integrations_counter_key)
         return new_integration.integration_id
 
     @transactions.atomic()
@@ -89,11 +101,16 @@ class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
     async def delete(self, integration_id: int):
         object_to_delete = await Integration.get(integration_id=integration_id)
         if object_to_delete:
-            # We could move the tranactions atomic here if we allow the counter to differ
+            if self.key_value_store is not None and not self.initialized:
+                await self.key_value_store_initialization()
+            # We could move the transaction atomic here if we allow the counter to differ
             await object_to_delete.delete()
+            await self.key_value_store.atomic_key_decrement(key_value_settings.integrations_counter_key)
 
         else:
             raise IntegrationNotFoundException()
 
     async def count_elements(self):
-        return await Integration.filter().count()
+        if self.key_value_store is not None and not self.initialized:
+            await self.key_value_store_initialization()
+        return await self.key_value_store.get(key_value_settings.integrations_counter_key)

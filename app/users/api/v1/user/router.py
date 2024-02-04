@@ -18,7 +18,7 @@ from app.users.api.v1.user.v2.crud.views import (
     users_get_v2,
     users_post_v2,
 )
-from remuner_library.fastapi_extensions import custom_router_decorator
+from remuner_library.fast_api_extension.fastapi_extensions import custom_router_decorator
 
 router = APIRouter()
 
