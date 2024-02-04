@@ -1,6 +1,8 @@
 from dependency_injector import containers, providers
 
-from app.integrations.persistence.cached_tortoise.integration_bo import IntegrationBOCachedTortoisePersistenceService
+from app.integrations.persistence.cached_tortoise.integration_bo import (
+    IntegrationBOCachedTortoisePersistenceService,
+)
 from app.integrations.persistence.tortoise.integration_bo import (
     IntegrationBOTortoisePersistenceService,
 )

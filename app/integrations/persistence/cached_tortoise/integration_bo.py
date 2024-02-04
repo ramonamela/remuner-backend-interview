@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from tortoise import transactions
 from tortoise.exceptions import IntegrityError
@@ -16,15 +16,13 @@ from app.integrations.persistence.tortoise.services.integration_bo_mapping_servi
 from app.users.domain.persistence.interfaces.team_bo_persistence_interface import (
     TeamBOPersistenceInterface,
 )
-from app.users.models import Team
 from app.users.persistence.tortoise.services.user_bo_mapping_service import (
     UserBOMappingService,
 )
 from remuner_library.persistences.key_value_store.key_value_interface import KeyValueInterface
-import asyncio
-from typing import Optional
-class IntegrationBOCachedTortoisePersistenceService(TeamBOPersistenceInterface):
 
+
+class IntegrationBOCachedTortoisePersistenceService(TeamBOPersistenceInterface):
 
     def __init__(self, key_value_store: Optional[KeyValueInterface] = None):
         self.integration_bo_mapping_service = IntegrationBOMappingService()
@@ -37,7 +35,9 @@ class IntegrationBOCachedTortoisePersistenceService(TeamBOPersistenceInterface):
     async def key_value_store_initialization(self):
         if self.key_value_store is not None and not self.initialized:
             counter = await Integration.filter().count()
-            await self.key_value_store.set_if_not_exists(key_value_settings.integrations_counter_key, counter)
+            await self.key_value_store.set_if_not_exists(
+                key_value_settings.integrations_counter_key, counter
+            )
             self.initialized = True
 
     @transactions.atomic()
@@ -105,7 +105,9 @@ class IntegrationBOCachedTortoisePersistenceService(TeamBOPersistenceInterface):
                 await self.key_value_store_initialization()
             # We could move the transaction atomic here if we allow the counter to differ
             await object_to_delete.delete()
-            await self.key_value_store.atomic_key_decrement(key_value_settings.integrations_counter_key)
+            await self.key_value_store.atomic_key_decrement(
+                key_value_settings.integrations_counter_key
+            )
 
         else:
             raise IntegrationNotFoundException()

@@ -3,7 +3,6 @@ from typing import List
 from tortoise import transactions
 from tortoise.exceptions import IntegrityError
 
-from app.config import key_value_settings
 from app.integrations.domain.bo.integration_bo import IntegrationBO
 from app.integrations.domain.persistence.exceptions.integration_bo import (
     IntegrationNotFoundException,
@@ -16,20 +15,16 @@ from app.integrations.persistence.tortoise.services.integration_bo_mapping_servi
 from app.users.domain.persistence.interfaces.team_bo_persistence_interface import (
     TeamBOPersistenceInterface,
 )
-from app.users.models import Team
 from app.users.persistence.tortoise.services.user_bo_mapping_service import (
     UserBOMappingService,
 )
-from remuner_library.persistences.key_value_store.key_value_interface import KeyValueInterface
-import asyncio
-from typing import Optional
-class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
 
+
+class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
 
     def __init__(self):
         self.integration_bo_mapping_service = IntegrationBOMappingService()
         self.user_bo_mapping_service = UserBOMappingService()
-
 
     @transactions.atomic()
     async def create(self, integration_bo: IntegrationBO):
