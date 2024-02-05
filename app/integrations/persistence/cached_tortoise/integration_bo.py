@@ -10,7 +10,7 @@ from app.integrations.domain.persistence.exceptions.integration_bo import (
     RepeatedIntegrationNameException,
 )
 from app.integrations.models import Integration
-from app.integrations.persistence.tortoise.services.integration_bo_mapping_service import (
+from app.integrations.persistence.cached_tortoise.services.integration_bo_mapping_service import (
     IntegrationBOMappingService,
 )
 from app.users.domain.bo.user_bo import UserBO
@@ -41,7 +41,7 @@ class IntegrationBOCachedTortoisePersistenceService(TeamBOPersistenceInterface):
     async def create(self, integration_bo: IntegrationBO):
         if self.key_value_store is not None and not self.initialized:
             await self.key_value_store_initialization()
-        # Add exception in case integration_bo.user.user_id and integration_bo.user_id are both None
+        # Add exception in case integration_bo.users.user_id and integration_bo.user_id are both None
         try:
             new_integration = await Integration.create(
                 name=integration_bo.name,
@@ -90,8 +90,7 @@ class IntegrationBOCachedTortoisePersistenceService(TeamBOPersistenceInterface):
         return integration_bo
 
     async def get_all(self) -> List[IntegrationBO]:
-        integrations = await Integration.filter().prefetch_related("user")
-        user_ids = list(map(lambda integration: integration.user_id, integrations))
+        integrations = await Integration.filter()
         return list(map(lambda integration: self._generate_bo(integration), integrations))
 
     async def get(self, integration_id: int) -> IntegrationBO:

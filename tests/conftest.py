@@ -9,6 +9,12 @@ from tortoise.contrib.test import finalizer, initializer
 from app.config import DATABASE_URL, models
 from app.main import app
 
+pytest_plugins = [
+    "tests.factories.users.domain.user_bo.user_bo_base",
+    "tests.factories.users.domain.team_bo.team_bo_base",
+    "tests.factories.integrations.domain.integration_bo.integration_bo_base",
+]
+
 
 @pytest.fixture(autouse=True, scope="session")
 def run_migrations() -> None:

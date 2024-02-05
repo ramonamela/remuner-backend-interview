@@ -34,7 +34,7 @@ async def users_get_v1() -> List[UserOutputV1]:
 async def users__user_id_get_v1(user_id: int) -> UserOutputV1:
     view_controller = GetUserControllers.v1()
     output_mapping_service = UserOutputMappingServiceV1()
-    return await output_mapping_service(user_bo=view_controller(user_id=user_id))
+    return output_mapping_service(user_bo=await view_controller(user_id=user_id))
 
 
 async def users_post_v1(post_input: UserInputV1) -> UserIdOutputV1:

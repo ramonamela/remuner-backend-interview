@@ -134,6 +134,26 @@ services:
         target: /remuner-backend
     entrypoint: black --config .black .
 
+  test: &test
+    image: remuner-backend-dev:latest
+    env_file:
+     - .env
+    volumes:
+      - type: bind
+        source: ./
+        target: /remuner-backend
+    networks:
+      - default-net
+    depends_on:
+      - postgres
+      - redis
+    entrypoint: pytest --maxfail=10
+
+  test-cov:
+    <<: *test
+    entrypoint: pytest --maxfail=10 --cov --cov-report=term --cov-report=html --junitxml=tests/test-results/junit.xml
+
+
 volumes:
   postgres-remuner-backend-data:
 

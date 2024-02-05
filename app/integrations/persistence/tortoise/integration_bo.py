@@ -28,7 +28,7 @@ class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
 
     @transactions.atomic()
     async def create(self, integration_bo: IntegrationBO):
-        # Add exception in case integration_bo.user.user_id and integration_bo.user_id are both None
+        # Add exception in case integration_bo.users.user_id and integration_bo.user_id are both None
         try:
             new_integration = await Integration.create(
                 name=integration_bo.name,
@@ -73,7 +73,7 @@ class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
         return integration_bo
 
     async def get_all(self) -> List[IntegrationBO]:
-        integrations = await Integration.filter().prefetch_related("user")
+        integrations = await Integration.filter().prefetch_related("users")
         return list(map(lambda integration: self._generate_bo(integration), integrations))
 
     async def get(self, integration_id: int) -> IntegrationBO:

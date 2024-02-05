@@ -1,7 +1,7 @@
 from functools import wraps
 from typing import Any, Callable, Dict
 
-from fastapi import Response, status
+from fastapi import HTTPException, Response, status
 from pydantic import ValidationError
 
 
@@ -26,8 +26,9 @@ def custom_router_decorator(versions: Dict[Any, Callable]):
                                 response.status_code = status.HTTP_400_BAD_REQUEST
                                 return {"message": "Incorrect body"}
                 return await current_function(*args, **kwargs)
-            response.status_code = status.HTTP_400_BAD_REQUEST
-            return {"message": "Incorrect header value"}
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect header value"
+            )
 
         return wrapper
 

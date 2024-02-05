@@ -31,22 +31,19 @@ from app.integrations.domain.persistence.exceptions.integration_bo import (
     IntegrationNotFoundException,
     RepeatedIntegrationNameException,
 )
-from app.users.dependency_injection.persistence.user_bo import UserBOPersistenceServices
 
 
 async def integrations_get_v1() -> List[IntegrationOutputV1]:
     view_controller = GetIntegrationControllers.v1()
-    output_mapping_service = IntegrationOutputMappingServiceV1(
-        user_bo_persistence_service=UserBOPersistenceServices.remuner()
-    )
-    return [await output_mapping_service(integration_bo) for integration_bo in await view_controller()]
+    output_mapping_service = IntegrationOutputMappingServiceV1()
+    return [
+        await output_mapping_service(integration_bo) for integration_bo in await view_controller()
+    ]
 
 
 async def integrations__integration_id_get_v1(integration_id: int) -> IntegrationOutputV1:
     view_controller = GetIntegrationControllers.v1()
-    output_mapping_service = IntegrationOutputMappingServiceV1(
-        user_bo_persistence_service=UserBOPersistenceServices.remuner()
-    )
+    output_mapping_service = IntegrationOutputMappingServiceV1()
     return await output_mapping_service(await view_controller(integration_id=integration_id))
 
 

@@ -4,12 +4,6 @@ from typing import List
 from tortoise import transactions
 from tortoise.exceptions import IntegrityError
 
-from app.integrations.domain.persistence.interfaces.integration_bo_persistence_interface import (
-    IntegrationBOPersistenceInterface,
-)
-from app.integrations.persistence.tortoise.services.integration_bo_mapping_service import (
-    IntegrationBOMappingService,
-)
 from app.users.domain.bo.user_bo import UserBO
 from app.users.domain.persistence.exceptions.team_bo import TeamNotFoundException
 from app.users.domain.persistence.exceptions.user_bo import (
@@ -31,13 +25,9 @@ from app.users.persistence.tortoise.services.user_bo_mapping_service import (
 
 class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
 
-    def __init__(self, integration_bo_persistence_service):
+    def __init__(self):
         self.user_bo_mapping_service = UserBOMappingService()
         self.team_bo_mapping_service = TeamBOMappingService()
-        self.integration_bo_mapping_service = IntegrationBOMappingService()
-        self.integration_bo_persistence_service: IntegrationBOPersistenceInterface = (
-            integration_bo_persistence_service
-        )
 
     @classmethod
     async def _add_teams_to_user(cls, user, team_ids):
@@ -96,44 +86,28 @@ class UserBOTortoisePersistenceService(UserBOPersistenceInterface):
 
     def _generate_bo(self, user: User) -> UserBO:
         user_bo = self.user_bo_mapping_service(user=user)
-        user_bo.teams = list(map(lambda team: self.team_bo_mapping_service(team), user.teams))
+        user_bo.teams = []
+        user_bo.team_ids = []
+        for team in user.teams:
+            user_bo.teams.append(self.team_bo_mapping_service(team))
+            user_bo.team_ids.append(user_bo.teams[-1].id)
         return user_bo
 
     async def get_all(self) -> List[UserBO]:
-        users = await User.filter().prefetch_related("teams")
-        user_bos = []
-        for user in users:
-            current_user_bo = self._generate_bo(user)
-            current_user_bo.integrations = []
-            user_bos.append(current_user_bo)
-        user_bos_dict = {
-            user_bo.id: user_bo for user_bo in user_bos
-        }
-        user_ids = list(map(lambda user_bo: user_bo.id, user_bos))
-        integration_bos = await self.integration_bo_persistence_service.get_integrations_for_users_in(user_ids=user_ids)
-        for integration_bo in integration_bos:
-            user_bos_dict[integration_bo.user_id].integrations.append(integration_bo)
-        return user_bos
+        return [self._generate_bo(user) for user in await User.filter().prefetch_related("teams")]
+
+    async def get_users_in(self, user_ids: List[int]):
+        return [
+            self._generate_bo(user)
+            for user in await User.filter(user_id__in=user_ids).prefetch_related("teams")
+        ]
 
     async def get(self, user_id: int) -> UserBO:
-        user = await User.get(user_id=user_id).prefetch_related("teams", "integrations")
-        self.integration_bo_persistence_service.get_integrations_for_user(user_id=user_id)
-        user_bo = self._generate_bo(user=user)
-        user_bo.integrations = self.integration_bo_persistence_service.get_integrations_for_user(user_id=user.user_id)
-        return user_bo
+        return self._generate_bo(await User.get(user_id=user_id).prefetch_related("teams"))
 
     async def delete(self, user_id: int):
-        object_to_delete = await User.get(user_id=user_id).prefetch_related("integrations")
+        object_to_delete = await User.get(user_id=user_id)
         if object_to_delete:
-            if (
-                len(
-                    self.integration_bo_persistence_service.get_integrations_for_user(
-                        user_id=user_id
-                    )
-                )
-                > 0
-            ):
-                raise UserHasIntegrationsException()
             await object_to_delete.delete()
         else:
             raise UserNotFoundException()

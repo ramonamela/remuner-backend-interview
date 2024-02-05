@@ -1,1 +1,1 @@
-post_input_v1 = {"name": "team_name"}
+post_input_v1 = {"name": "team_name", "users": []}

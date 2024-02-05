@@ -1,7 +1,9 @@
 -r ./prod.txt
 async-asgi-testclient==1.4.11
 black==24.1.0
+factory-boy==3.2.1
 pytest==7.4.4
 pytest-asyncio==0.21.1
+pytest-cov==4.0.0
 pytest-env==1.0.1
 ruff==0.1.14
