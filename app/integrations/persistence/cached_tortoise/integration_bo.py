@@ -94,7 +94,7 @@ class IntegrationBOCachedTortoisePersistenceService(TeamBOPersistenceInterface):
         return list(map(lambda integration: self._generate_bo(integration), integrations))
 
     async def get(self, integration_id: int) -> IntegrationBO:
-        integration = await Integration.get(integration_id=integration_id).prefetch_related("users")
+        integration = await Integration.get(integration_id=integration_id)
         return self._generate_bo(integration=integration)
 
     async def get_integrations_for_user(self, user_id: int):

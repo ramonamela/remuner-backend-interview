@@ -8,7 +8,6 @@ from app.users.domain.bo.user_bo import UserBO
 from app.users.domain.persistence.exceptions.team_bo import TeamNotFoundException
 from app.users.domain.persistence.exceptions.user_bo import (
     RepeatedEmailException,
-    UserHasIntegrationsException,
     UserNotFoundException,
 )
 from app.users.domain.persistence.interfaces.user_bo_persistence_interface import (

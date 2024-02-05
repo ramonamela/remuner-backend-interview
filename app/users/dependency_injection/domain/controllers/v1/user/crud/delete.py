@@ -1,6 +1,8 @@
 from dependency_injector import containers, providers
 
-from app.integrations.dependency_injection.persistence.integration_bo import IntegrationBOPersistenceServices
+from app.integrations.dependency_injection.persistence.integration_bo import (
+    IntegrationBOPersistenceServices,
+)
 from app.users.dependency_injection.persistence.user_bo import (
     UserBOPersistenceServices,
 )

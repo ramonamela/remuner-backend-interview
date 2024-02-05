@@ -31,7 +31,7 @@ class GetUserControllerV1:
                 )
             )
             for integration_bo in integration_bos:
-                user_bos_dict[integration_bo.user_id] = integration_bo
+                user_bos_dict[integration_bo.user_id].integrations.append(integration_bo)
             return user_bos
         else:
             user_bo = await self.user_bo_persistence_service.get(user_id=user_id)

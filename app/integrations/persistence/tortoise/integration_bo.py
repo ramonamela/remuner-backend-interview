@@ -84,6 +84,13 @@ class IntegrationBOTortoisePersistenceService(TeamBOPersistenceInterface):
         integrations = await Integration.filter(user_id=user_id)
         return list(map(lambda integration: self._generate_bo(integration), integrations))
 
+    async def count_integrations_for_user(self, user_id: int):
+        return await Integration.filter(user_id=user_id).count()
+
+    async def get_integrations_for_users_in(self, user_ids: List[int]):
+        integrations = await Integration.filter(user_id__in=user_ids)
+        return list(map(lambda integration: self._generate_bo(integration), integrations))
+
     @transactions.atomic()
     async def delete(self, integration_id: int):
         object_to_delete = await Integration.get(integration_id=integration_id)

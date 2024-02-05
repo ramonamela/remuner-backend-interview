@@ -78,7 +78,11 @@ class TeamBOTortoisePersistenceService(TeamBOPersistenceInterface):
 
     def _generate_bo(self, team: Team) -> TeamBO:
         team_bo = self.team_bo_mapping_service(team=team)
-        team_bo.users = list(map(lambda user: self.user_bo_mapping_service(user), team.users))
+        team_bo.users = []
+        team_bo.user_ids = []
+        for user in team.users:
+            team_bo.users.append(self.user_bo_mapping_service(user))
+            team_bo.user_ids.append(user.user_id)
         return team_bo
 
     async def get_all(self) -> List[TeamBO]:

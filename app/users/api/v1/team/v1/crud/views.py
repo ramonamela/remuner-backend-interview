@@ -42,9 +42,7 @@ async def teams_post_v1(post_input: TeamInputV1) -> TeamIdOutputV1:
     view_controller = CreateTeamControllers.v1()
     input_mapping_service = TeamInputMappingServiceV1()
     try:
-        return TeamIdOutputV1(
-            id=await view_controller(input_team=input_mapping_service(post_input))
-        )
+        return TeamIdOutputV1(id=await view_controller(team_bo=input_mapping_service(post_input)))
     except RepeatedTeamNameException:
         raise HTTPException(status_code=409, detail="Team name already exists in the database")
 
@@ -54,7 +52,7 @@ async def teams__team_id_post_v1(team_id: int, post_input: TeamInputV1) -> TeamI
     input_mapping_service = TeamInputMappingServiceV1()
     try:
         return TeamIdOutputV1(
-            id=await view_controller(team_id=team_id, input_team=input_mapping_service(post_input))
+            id=await view_controller(team_id=team_id, team_bo=input_mapping_service(post_input))
         )
     except TeamNotFoundException:
         raise HTTPException(status_code=404, detail="Team not found")
